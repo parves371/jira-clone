@@ -1,12 +1,41 @@
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { DottedSeparator } from "@/components/dotted-separator";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import { Button } from "@/components/ui/button";
+
+import { DottedSeparator } from "@/components/dotted-separator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import Link from "next/link";
 
 export const SignInCard = () => {
+  const fromSchema = z.object({
+    email: z.string().trim().email(),
+    password: z.string().min(1, "Required"),
+  });
+
+  const form = useForm<z.infer<typeof fromSchema>>({
+    resolver: zodResolver(fromSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof fromSchema>) => {
+    console.log(values);
+  };
+
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex justyfy-center items-center text-center p-7">
@@ -16,29 +45,46 @@ export const SignInCard = () => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7">
-        <form className="space-y-4">
-          <Input
-            required
-            type="email"
-            placeholder="Enter your Email"
-            value={""}
-            onChange={() => {}}
-            disabled={false}
-          />
-          <Input
-            required
-            type="password"
-            placeholder="Enter your Password"
-            value={""}
-            onChange={() => {}}
-            disabled={false}
-            min={8}
-            max={256}
-          />
-          <Button disabled={false} size={"lg"} className="w-full">
-            Sign In
-          </Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              name="email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      {...field}
+                      placeholder="Enter your Email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      {...field}
+                      placeholder="Enter your Password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button disabled={false} size={"lg"} className="w-full">
+              Sign In
+            </Button>
+          </form>
+        </Form>
       </CardContent>
       <div className="px-7">
         <DottedSeparator />
@@ -62,6 +108,15 @@ export const SignInCard = () => {
           <FaGithub className="mr-2 size-5" />
           <span>Sign In with Github</span>
         </Button>
+      </CardContent>
+      <div className="px-7">
+        <DottedSeparator />
+      </div>
+      <CardContent className="p-7 flex items-center justify-center ">
+        <p>don't have an account?</p> 
+        <Link href={"/sign-up"}>
+          <span className="text-blue-700">&nbsp; Sign Up</span>
+        </Link>
       </CardContent>
     </Card>
   );
