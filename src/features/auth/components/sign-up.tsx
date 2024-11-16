@@ -23,16 +23,13 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import Link from "next/link";
+import { signUpSchema } from "../shcemas";
+import { useSignUp } from "../api/use-signUp";
 
 export const SignUpCard = () => {
-  const fromSchema = z.object({
-    name: z.string().trim().min(1, "Required"),
-    email: z.string().trim().email(),
-    password: z.string().min(8, "password must be at least 8 characters"),
-  });
-
-  const form = useForm<z.infer<typeof fromSchema>>({
-    resolver: zodResolver(fromSchema),
+  const { mutate } = useSignUp();
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -40,8 +37,8 @@ export const SignUpCard = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof fromSchema>) => {
-    console.log(values);
+  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
+    mutate({ json: values });
   };
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
@@ -146,7 +143,7 @@ export const SignUpCard = () => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center ">
-        <p>already have an account</p> 
+        <p>already have an account</p>
         <Link href={"/sign-in"}>
           <span className="text-blue-700">&nbsp; Sign in</span>
         </Link>

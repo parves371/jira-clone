@@ -17,23 +17,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Link from "next/link";
+import { loginSchema } from "../shcemas";
+import { useLogin } from "../api/use-login";
 
 export const SignInCard = () => {
-  const fromSchema = z.object({
-    email: z.string().trim().email(),
-    password: z.string().min(1, "Required"),
-  });
-
-  const form = useForm<z.infer<typeof fromSchema>>({
-    resolver: zodResolver(fromSchema),
+  const { mutate } = useLogin();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof fromSchema>) => {
-    console.log(values);
+  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+    mutate({ json: values });
   };
 
   return (
@@ -113,7 +111,7 @@ export const SignInCard = () => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center ">
-        <p>don't have an account?</p> 
+        <p>don't have an account?</p>
         <Link href={"/sign-up"}>
           <span className="text-blue-700">&nbsp; Sign Up</span>
         </Link>
