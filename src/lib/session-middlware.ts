@@ -26,29 +26,31 @@ type AdditionalContext = {
   };
 };
 
-export const sessionMiddaleware = createMiddleware<AdditionalContext>(async (c, next) => {
-  const newClient = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+export const sessionMiddaleware = createMiddleware<AdditionalContext>(
+  async (c, next) => {
+    const newClient = new Client()
+      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
-  const cookie = getCookie(c, AUTH_COOKIE);
+    const cookie = getCookie(c, AUTH_COOKIE);
 
-  if (!cookie) {
-    return c.json({ error: "Unauthorized" }, 401);
+    if (!cookie) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    newClient.setSession(cookie);
+
+    const account = new Account(newClient);
+    const databases = new Databases(newClient);
+    const storage = new Storage(newClient);
+
+    const user = await account.get();
+
+    c.set("account", account);
+    c.set("databases", databases);
+    c.set("storage", storage);
+    c.set("user", user);
+
+    await next();
   }
-
-  newClient.setSession(cookie);
-
-  const account = new Account(newClient);
-  const databases = new Databases(newClient);
-  const storage = new Storage(newClient);
-
-  const user = await account.get();
-
-  c.set("account", account);
-  c.set("databases", databases);
-  c.set("storage", storage);
-  c.set("user", user);
-
-  await next();
-});
+);

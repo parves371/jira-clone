@@ -3,6 +3,7 @@ import { InferRequestType, InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type ResponseType = InferResponseType<(typeof client.api.auth.signUp)["$post"]>;
 type RequestType = InferRequestType<(typeof client.api.auth.signUp)["$post"]>;
@@ -15,12 +16,19 @@ export const useSignUp = () => {
       const res = await client.api.auth.signUp.$post({
         json,
       });
+
+      if (!res.ok) {
+        throw new Error("Sign up failed");
+      }
+
       return await res.json();
     },
     onSuccess: () => {
+      toast.success("Sign up successful");
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });
     },
+    onError: () => toast.error("Sign up failed"),
   });
 
   return mutation;
