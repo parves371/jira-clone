@@ -20,14 +20,17 @@ import { useRef } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceProps {
   onCancel?: () => void;
 }
 
-export const CreateWorkspace = ({ onCancel }: CreateWorkspaceProps) => {
+export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceProps) => {
   const { mutate, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -46,9 +49,9 @@ export const CreateWorkspace = ({ onCancel }: CreateWorkspaceProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset();
-          // TODO: redirect to workspace
+          router.push(`/workspaces/${data.$id}`);
         },
       }
     );
@@ -148,6 +151,7 @@ export const CreateWorkspace = ({ onCancel }: CreateWorkspaceProps) => {
                   variant={"secondary"}
                   onClick={onCancel}
                   disabled={isPending}
+                  className={cn("", !onCancel && "invisible")}
                 >
                   Cancel
                 </Button>
