@@ -5,51 +5,59 @@ import { sessionMiddaleware } from "@/lib/session-middlware";
 import { DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACE_ID } from "@/config";
 import { ID } from "node-appwrite";
 
-const app = new Hono().post(
-  "/",
-  zValidator("form", createWorkspaceSchema),
-  sessionMiddaleware,
-  async (c) => {
+const app = new Hono()
+
+  .get("/", sessionMiddaleware, async (c) => {
     const databases = c.get("databases");
     const user = c.get("user");
-    const storage = c.get("storage");
+    const workspaces = await databases.listDocuments(DATABASE_ID, WORKSPACE_ID);
+    return c.json({ data: workspaces });
+  })
 
-    const { name, image } = c.req.valid("form");
-    let uploadedImageUrl: string | undefined;
+  .post(
+    "/",
+    zValidator("form", createWorkspaceSchema),
+    sessionMiddaleware,
+    async (c) => {
+      const databases = c.get("databases");
+      const user = c.get("user");
+      const storage = c.get("storage");
 
-    if (image instanceof File) {
-      const file = await storage.createFile(
-        IMAGES_BUCKET_ID,
-        ID.unique(),
-        image
-      );
+      const { name, image } = c.req.valid("form");
+      let uploadedImageUrl: string | undefined;
 
-      const arrayBuffer = await storage.getFileView(
-        IMAGES_BUCKET_ID,
-        file.$id
-      );
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image
+        );
 
-      uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-        arrayBuffer
-      ).toString("base64")}`;
-    }
+        const arrayBuffer = await storage.getFileView(
+          IMAGES_BUCKET_ID,
+          file.$id
+        );
 
-
-    console.log("uploadedImageUrl", uploadedImageUrl);
-
-    const worksSpace = await databases.createDocument(
-      DATABASE_ID,
-      WORKSPACE_ID,
-      ID.unique(),
-      {
-        name,
-        userId: user.$id,
-        imageUrl: uploadedImageUrl,
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          arrayBuffer
+        ).toString("base64")}`;
       }
-    );
 
-    return c.json({ data: worksSpace });
-  }
-);
+      console.log("uploadedImageUrl", uploadedImageUrl);
+
+      const worksSpace = await databases.createDocument(
+        DATABASE_ID,
+        WORKSPACE_ID,
+        ID.unique(),
+        {
+          name,
+          userId: user.$id,
+          imageUrl: uploadedImageUrl,
+        }
+      );
+
+      return c.json({ data: worksSpace });
+    }
+  );
 
 export default app;
