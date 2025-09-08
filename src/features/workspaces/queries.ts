@@ -5,73 +5,57 @@ import { getMember } from "../members/utils";
 import { workspace } from "./types";
 
 export const getWorkspaces = async () => {
-  try {
-    const { account, databases } = await createSessionClient();
+  const { account, databases } = await createSessionClient();
 
-    const user = await account.get();
+  const user = await account.get();
 
-    const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
-      Query.equal("userId", user.$id),
-    ]);
+  const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+    Query.equal("userId", user.$id),
+  ]);
 
-    if (members.total === 0) {
-      return {
-        documents: [],
-        total: 0,
-      };
-    }
-    const workspaceIds = members.documents.map((member) => member.workspaceId);
-
-    const workspaces = await databases.listDocuments(
-      DATABASE_ID,
-      WORKSPACE_ID,
-      [Query.orderDesc("$createdAt"), Query.contains("$id", workspaceIds)]
-    );
-    return workspaces;
-  } catch (error) {
+  if (members.total === 0) {
     return {
       documents: [],
       total: 0,
     };
   }
+  const workspaceIds = members.documents.map((member) => member.workspaceId);
+
+  const workspaces = await databases.listDocuments(DATABASE_ID, WORKSPACE_ID, [
+    Query.orderDesc("$createdAt"),
+    Query.contains("$id", workspaceIds),
+  ]);
+  return workspaces;
 };
 export const getWorkspace = async ({ id }: { id: string }) => {
-  try {
-    const { account, databases } = await createSessionClient();
+  const { account, databases } = await createSessionClient();
 
-    const user = await account.get();
+  const user = await account.get();
 
-    const member = await getMember({
-      databases,
-      userId: user.$id,
-      workspaceId: id,
-    });
+  const member = await getMember({
+    databases,
+    userId: user.$id,
+    workspaceId: id,
+  });
 
-    if (!member) return null;
+  if (!member) throw new Error("Unauthorized");
 
-    const workspaces = await databases.getDocument<workspace>(
-      DATABASE_ID,
-      WORKSPACE_ID,
-      id
-    );
-    return workspaces;
-  } catch (error) {
-    return null;
-  }
+  const workspaces = await databases.getDocument<workspace>(
+    DATABASE_ID,
+    WORKSPACE_ID,
+    id
+  );
+  return workspaces;
 };
 export const getWorkspaceInfo = async ({ id }: { id: string }) => {
-  try {
-    const { databases } = await createSessionClient();
+  const { databases } = await createSessionClient();
 
-    const workspaces = await databases.getDocument<workspace>(
-      DATABASE_ID,
-      WORKSPACE_ID,
-      id
-    );
-    return {
-      name: workspaces.name,
-    };
-  } catch (error) {
-    return null;
-  }
+  const workspaces = await databases.getDocument<workspace>(
+    DATABASE_ID,
+    WORKSPACE_ID,
+    id
+  );
+  return {
+    name: workspaces.name,
+  };  
 };
