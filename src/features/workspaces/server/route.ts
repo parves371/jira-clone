@@ -169,6 +169,35 @@ const app = new Hono()
         $id: workspaceId,
       },
     });
+  })
+  .post("/:workspaceId/reset-invite-code", sessionMiddaleware, async (c) => {
+    const databases = c.get("databases");
+    const user = c.get("user");
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
+    if (!member || member.role !== MemberRole.ADMIN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // TODO : delete all members , project , tasks
+    const workspace = await databases.updateDocument(
+      DATABASE_ID,
+      WORKSPACE_ID,
+      workspaceId,
+      {
+        inviteCode: genrateInviteCode(6),
+      }
+    );
+
+    return c.json({
+      data: workspace,
+    });
   });
 
 export default app;
