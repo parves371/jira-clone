@@ -5,13 +5,15 @@ import auth from "@/features/auth/server/route";
 import workspaces from "@/features/workspaces/server/route";
 import member from "@/features/members/server/route";
 import projects from "@/features/projects/server/route";
+import Task from "@/features/taks/server/route";
 const app = new Hono().basePath("/api");
 
 const routes = app
   .route("/auth", auth)
   .route("/workspaces", workspaces)
   .route("/members", member)
-  .route("/projects", projects);
+  .route("/projects", projects)
+  .route("/tasks", Task);
 
 export const GET = handle(app);
 export const POST = handle(app);
