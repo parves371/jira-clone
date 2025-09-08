@@ -1,4 +1,4 @@
-import { getCurent } from "@/features/auth/action";
+import { getCurent } from "@/features/auth/queries";
 import { redirect } from "next/navigation";
 
 const Page = async () => {
