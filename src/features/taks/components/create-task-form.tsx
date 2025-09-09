@@ -76,7 +76,6 @@ export const CreateTaskForm = ({
       {
         onSuccess: ({ data }) => {
           form.reset();
-          // Close the form or redirect as needed
           if (onCancel) {
             onCancel();
           }
