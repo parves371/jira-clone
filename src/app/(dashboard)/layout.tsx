@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
 import { CreateProjectModal } from "@/features/projects/components/create-project-modal";
 import { CreateTaskModal } from "@/features/taks/components/create-task-modal";
+import { EditeTaskModal } from "@/features/taks/components/edit-task-modal";
 import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -9,7 +10,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className=" min-h-screen">
       <CreateWorkspaceModal />
       <CreateProjectModal />
-      <CreateTaskModal/>
+      <CreateTaskModal />
+      <EditeTaskModal />
       <div className="flex w-full h-full">
         <div className="fixed left-0 top-0 hidden lg:block lg:w-[264px] h-full overflow-y-auto">
           <Sidebar />

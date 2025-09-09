@@ -17,7 +17,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { MemberAvatar } from "@/features/members/components/members-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
@@ -30,9 +30,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateTask } from "../api/use-create-task";
 import { createTaskSchema } from "../schemas";
-import { TaskStatus } from "../types";
+import { Task, TaskStatus } from "../types";
+import { useUpdateTask } from "../api/use-update-task";
 
-interface CreateTaskProps {
+interface EditTaskProps {
   onCancel?: () => void;
   projectOption: {
     id: string;
@@ -43,34 +44,41 @@ interface CreateTaskProps {
     id: string;
     name: string;
   }[];
+
+  initialValues: Task;
 }
 
-export const CreateTaskForm = ({
+export const EditTaskForm = ({
   onCancel,
   membersOption,
   projectOption,
-}: CreateTaskProps) => {
+  initialValues,
+}: EditTaskProps) => {
   const workspaceId = useWorkspaceId();
-  const { mutate, isPending } = useCreateTask();
+  const { mutate, isPending } = useUpdateTask();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof createTaskSchema>>({
-    resolver: zodResolver(createTaskSchema.omit({ workspaceId: true })),
+    resolver: zodResolver(
+      createTaskSchema.omit({ workspaceId: true, description: true })
+    ),
     defaultValues: {
-      workspaceId,
-      status: TaskStatus.TODO,
+      ...initialValues,
+      dueDate: initialValues?.dueDate
+        ? new Date(initialValues?.dueDate)
+        : undefined,
     },
   });
 
   const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
-    console.log(values)
+    console.log(values);
     mutate(
       {
-        json: {
-          ...values,
-          workspaceId,
+        json: values,
+        param: {
+          taskId: initialValues?.$id,
         },
       },
       {
@@ -89,7 +97,7 @@ export const CreateTaskForm = ({
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">Create a Task</CardTitle>
+        <CardTitle className="text-xl font-bold">Edit a Task</CardTitle>
       </CardHeader>
       <div className="px-7">
         <DottedSeparator />
@@ -248,7 +256,7 @@ export const CreateTaskForm = ({
                   size={"lg"}
                   variant={"primary"}
                 >
-                  Create
+                  Save changes
                 </Button>
               </div>
             </form>
