@@ -2,20 +2,23 @@
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader, PlusIcon } from "lucide-react";
-import { useCreateTaskModal } from "../hooks/use-create-task-modal";
-import { useGetTasks } from "../api/use-get-tasks";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { Loader, PlusIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { DataFilter } from "./data-filter";
+import { useGetTasks } from "../api/use-get-tasks";
+import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useTaskFilters } from "../hooks/use-task-filters";
+import { columns } from "./columns";
+import { DataFilter } from "./data-filter";
+import { DataTable } from "./data-table";
 
 const TaskViewSwitcher = () => {
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
 
-  const [{ search, assingneeId, dueDate, projectId, status }] = useTaskFilters();
+  const [{ search, assingneeId, dueDate, projectId, status }] =
+    useTaskFilters();
 
   const { open } = useCreateTaskModal();
   const workspaceId = useWorkspaceId();
@@ -63,7 +66,7 @@ const TaskViewSwitcher = () => {
         ) : (
           <>
             <TabsContent value="table" className="mt-0">
-              {JSON.stringify(tasks, null, 2)}
+              <DataTable columns={columns} data={tasks?.documents ?? []} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
               {JSON.stringify(tasks, null, 2)}

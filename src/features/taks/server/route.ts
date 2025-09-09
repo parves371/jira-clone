@@ -6,7 +6,7 @@ import { Hono } from "hono";
 import { createTaskSchema } from "../schemas";
 import { ID, Query } from "node-appwrite";
 import { z } from "zod";
-import { TaskStatus } from "../types";
+import { Task, TaskStatus } from "../types";
 import { createAdminClient } from "@/lib/appwrite";
 import { Project } from "@/features/projects/types";
 
@@ -69,7 +69,7 @@ const app = new Hono()
         query.push(Query.search("name", search));
       }
 
-      const task = await databases.listDocuments(DATABASE_ID, TASK_ID, query);
+      const task = await databases.listDocuments<Task>(DATABASE_ID, TASK_ID, query);
 
       const projectIds = task.documents.map((task) => task.projectId);
       const assigneeIds = task.documents.map((task) => task.assigneeId);

@@ -17,3 +17,7 @@ export function genrateInviteCode(max: number) {
   }
   return result;
 }
+
+export function snakeCaseToTitleCase(str: string) {
+  return str.replace(/(_\w)/g, (match) => match[1].toUpperCase());
+}
