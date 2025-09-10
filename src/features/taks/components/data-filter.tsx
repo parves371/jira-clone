@@ -103,26 +103,29 @@ export const DataFilter = ({ hideProjectFilter }: DataFilterProps) => {
           ))}
         </SelectContent>
       </Select>
-      <Select
-        onValueChange={(value) => onProjectChange(value)}
-        defaultValue={projectId ?? undefined}
-      >
-        <SelectTrigger className="w-full lg:w-auto h-8">
-          <div className="flex items-center pr-2">
-            <UserIcon className="size-5 mr-2" />
-            <SelectValue placeholder="all Assignees" />
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Projects</SelectItem>
-          <SelectSeparator />
-          {projectOptions?.map((project) => (
-            <SelectItem key={project.id} value={project.id}>
-              {project.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hideProjectFilter && (
+        <Select
+          onValueChange={(value) => onProjectChange(value)}
+          defaultValue={projectId ?? undefined}
+        >
+          <SelectTrigger className="w-full lg:w-auto h-8">
+            <div className="flex items-center pr-2">
+              <UserIcon className="size-5 mr-2" />
+              <SelectValue placeholder="all Projects" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Projects</SelectItem>
+            <SelectSeparator />
+            {projectOptions?.map((project) => (
+              <SelectItem key={project.id} value={project.id}>
+                {project.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
       <DatePicker
         placeholder="Due date"
         className="h-8 w-full lg:w-auto"

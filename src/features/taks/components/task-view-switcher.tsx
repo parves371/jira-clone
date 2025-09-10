@@ -3,12 +3,10 @@ import { useCallback } from "react";
 import { useQueryState } from "nuqs";
 import { Loader, PlusIcon } from "lucide-react";
 
-
 import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
@@ -21,7 +19,11 @@ import { useTaskFilters } from "../hooks/use-task-filters";
 import { useBulkUpdateTasks } from "../api/use-bulk-update-task";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 
-const TaskViewSwitcher = () => {
+interface TaskViewSwitcherProps {
+  hideProjectFilters?: boolean;
+}
+
+const TaskViewSwitcher = ({ hideProjectFilters }: TaskViewSwitcherProps) => {
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -85,7 +87,7 @@ const TaskViewSwitcher = () => {
           </Button>
         </div>
         <DottedSeparator className="my-4" />
-        <DataFilter />
+        <DataFilter hideProjectFilter={hideProjectFilters} />
         <DottedSeparator className="my-4" />
         {isLoadingTask ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
