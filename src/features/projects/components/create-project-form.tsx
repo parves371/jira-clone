@@ -84,7 +84,7 @@ export const CreateProjectsForm = ({ onCancel }: CreateWorkspaceProps) => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Workspace name</FormLabel>
+                      <FormLabel>Project name</FormLabel>
                       <FormControl>
                         <Input placeholder="project name" {...field} />
                       </FormControl>

@@ -26,6 +26,7 @@ import React from "react";
 import Link from "next/link";
 import { signUpSchema } from "../shcemas";
 import { useSignUp } from "../api/use-signUp";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 export const SignUpCard = () => {
   const { mutate, isPending } = useSignUp();
@@ -126,6 +127,7 @@ export const SignUpCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={() => signUpWithGoogle()}
         >
           <FcGoogle className="mr-2 size-5" />
           <span>Sign In with Google</span>
@@ -135,6 +137,7 @@ export const SignUpCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={() => signUpWithGithub()}
         >
           <FaGithub className="mr-2 size-5" />
           <span>Sign In with Github</span>

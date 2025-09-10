@@ -21,8 +21,10 @@ import Link from "next/link";
 import { loginSchema } from "../shcemas";
 import { useLogin } from "../api/use-login";
 
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
+
 export const SignInCard = () => {
-  const { mutate ,isPending} = useLogin();
+  const { mutate, isPending } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -94,11 +96,13 @@ export const SignInCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={() => signUpWithGoogle()}
         >
           <FcGoogle className="mr-2 size-5" />
           <span>Sign In with Google</span>
         </Button>
         <Button
+          onClick={() => signUpWithGithub()}
           variant={"secondary"}
           size={"lg"}
           className="w-full"
