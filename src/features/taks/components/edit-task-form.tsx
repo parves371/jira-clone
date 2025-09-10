@@ -21,17 +21,13 @@ import {
 } from "@/components/ui/select";
 import { MemberAvatar } from "@/features/members/components/members-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateTask } from "../api/use-create-task";
+import { useUpdateTask } from "../api/use-update-task";
 import { createTaskSchema } from "../schemas";
 import { Task, TaskStatus } from "../types";
-import { useUpdateTask } from "../api/use-update-task";
 
 interface EditTaskProps {
   onCancel?: () => void;
@@ -54,11 +50,8 @@ export const EditTaskForm = ({
   projectOption,
   initialValues,
 }: EditTaskProps) => {
-  const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useUpdateTask();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(

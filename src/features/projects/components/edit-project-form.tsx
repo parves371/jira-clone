@@ -1,8 +1,4 @@
 "use client";
-import { DottedSeparator } from "@/components/dotted-separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -12,20 +8,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { DottedSeparator } from "@/components/dotted-separator";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { z } from "zod";
-import { useConfirm } from "@/hooks/use-confirm";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useRef } from "react";
+
+import { useForm } from "react-hook-form";
 import { Project } from "../types";
+import { useRouter } from "next/navigation";
+import { useConfirm } from "@/hooks/use-confirm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useDeleteProject } from "../api/use-delete-projects";
 import { useUpdateProject } from "../api/use-update-projects";
 import { updateProjectschema } from "../schemas";
-import { toast } from "sonner";
-import { useDeleteProject } from "../api/use-delete-projects";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 
 interface EditProjectProps {
   onCancel?: () => void;
@@ -244,7 +245,7 @@ export const EditProjectForm = ({
               size={"sm"}
               variant={"destructive"}
               type="button"
-              disabled={isPending}
+              disabled={isPending || isPendingDelete}
               onClick={handleDelete}
             >
               Delete project

@@ -17,15 +17,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { MemberAvatar } from "@/features/members/components/members-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateTask } from "../api/use-create-task";
@@ -53,9 +51,6 @@ export const CreateTaskForm = ({
   const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useCreateTask();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(createTaskSchema.omit({ workspaceId: true })),
     defaultValues: {
@@ -65,7 +60,7 @@ export const CreateTaskForm = ({
   });
 
   const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
-    console.log(values)
+    console.log(values);
     mutate(
       {
         json: {
