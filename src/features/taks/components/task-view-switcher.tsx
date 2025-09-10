@@ -1,20 +1,25 @@
 "use client";
-import { DottedSeparator } from "@/components/dotted-separator";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-import { Loader, PlusIcon } from "lucide-react";
-import { useQueryState } from "nuqs";
-import { useGetTasks } from "../api/use-get-tasks";
-import { useCreateTaskModal } from "../hooks/use-create-task-modal";
-import { useTaskFilters } from "../hooks/use-task-filters";
-import { columns } from "./columns";
-import { DataFilter } from "./data-filter";
-import { DataTable } from "./data-table";
-import { DataKanban } from "./data-kanban";
 import { useCallback } from "react";
+import { useQueryState } from "nuqs";
+import { Loader, PlusIcon } from "lucide-react";
+
+
+import { Button } from "@/components/ui/button";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { DottedSeparator } from "@/components/dotted-separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { DataFilter } from "./data-filter";
 import { TaskStatus } from "../types";
+import { DataKanban } from "./data-kanban";
+import { useGetTasks } from "../api/use-get-tasks";
+import { DataCalendar } from "./data-calendar";
+import { useTaskFilters } from "../hooks/use-task-filters";
 import { useBulkUpdateTasks } from "../api/use-bulk-update-task";
+import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 
 const TaskViewSwitcher = () => {
   const [view, setView] = useQueryState("task-view", {
@@ -97,8 +102,8 @@ const TaskViewSwitcher = () => {
                 data={tasks?.documents ?? []}
               />
             </TabsContent>
-            <TabsContent value="calender" className="mt-0">
-              {JSON.stringify(tasks, null, 2)}
+            <TabsContent value="calender" className="mt-0 h-full pb-4">
+              <DataCalendar data={tasks?.documents ?? []} />
             </TabsContent>
           </>
         )}
