@@ -7,7 +7,7 @@ interface Member {
 
 export const useGetMembers = ({ workspaceId }: Member) => {
   const query = useQuery({
-    queryKey: ["Members", workspaceId],
+    queryKey: ["members", workspaceId],
     queryFn: async () => {
       const res = await client.api.members.$get({
         query: {

@@ -7,7 +7,7 @@ import { getMember } from "../utils";
 import { DATABASE_ID, MEMBERS_ID } from "@/config";
 import { Query } from "node-appwrite";
 import { workspace } from "@/features/workspaces/types";
-import { MemberRole } from "../types";
+import { Member, MemberRole } from "../types";
 
 const app = new Hono()
   .get(
@@ -35,7 +35,7 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      const members = await databases.listDocuments<Member>(DATABASE_ID, MEMBERS_ID, [
         Query.equal("workspaceId", workspaceId),
       ]);
 
@@ -48,7 +48,7 @@ const app = new Hono()
 
       return c.json({
         data: {
-          ...member,
+          ...members,
           documents: populatedMembers,
         },
       });
