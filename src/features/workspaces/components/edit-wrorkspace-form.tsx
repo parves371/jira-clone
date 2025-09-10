@@ -85,21 +85,13 @@ export const EditWorkspaceForm = ({
     },
   });
 
-
   const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : "",
     };
 
-    mutate(
-      { form: finalValues, param: { workspaceId: initialValuse.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-        },
-      }
-    );
+    mutate({ form: finalValues, param: { workspaceId: initialValuse.$id } });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

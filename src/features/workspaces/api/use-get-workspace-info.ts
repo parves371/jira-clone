@@ -5,17 +5,17 @@ interface Project {
   workspaceId: string;
 }
 
-export const useGetworkspace = ({ workspaceId }: Project) => {
+export const useGetworkspaceInfo = ({ workspaceId }: Project) => {
   const query = useQuery({
-    queryKey: ["workspace", workspaceId],
+    queryKey: ["workspace-info", workspaceId],
 
     queryFn: async () => {
-      const res = await client.api.workspaces[":workspaceId"].$get({
+      const res = await client.api.workspaces[":workspaceId"]["info"].$get({
         param: { workspaceId },
       });
 
       if (!res.ok) {
-        throw new Error("Failed to get workspace");
+        throw new Error("Failed to get workspaceInfo");
       }
 
       const { data } = await res.json();

@@ -14,7 +14,6 @@ type RequestType = InferRequestType<
 >;
 
 export const useUpdateProject = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -30,9 +29,8 @@ export const useUpdateProject = () => {
     },
     onSuccess: ({ data }) => {
       toast.success("project updated successfully");
-      router.refresh();
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["projects", data.$id] });
+      queryClient.invalidateQueries({ queryKey: ["project", data.$id] });
     },
     onError: () => toast.error("Failed to update project"),
   });
